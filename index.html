@@ -23,6 +23,7 @@
 
         .box .row.header {
             flex: 0 1 auto;
+            min-width: 300px;
         }
 
         .box .row.content {
@@ -35,7 +36,10 @@
 
         .fill {
             width: 100%;
-            height: 100%;
+            height: 99vh;
+            margin:0px;
+            padding: 0px;
+            border: 0px;
         }
     </style>
 </head>
@@ -43,25 +47,21 @@
     <script type="application/javascript">
         'use strict';
         window.addEventListener('load', function() {
-            console.log("elo");
+            console.log("Hello world!");
         });
     </script>
 
     <div class="box">
         <div class="row header">
             <p>
-                <b>header</b>
-                <br />
-                <br />(sized to content)
+                <h1>Tests</h1>
             </p>
         </div>
         <div class="row content">
-            <p>
-                <iframe id="testing" class="fill"/>
-            </p>
+            <iframe id="testing" class="fill"></iframe>
         </div>
         <div class="row footer">
-            <p><b>footer</b> (fixed height)</p>
+            <!--<p><b>footer</b> (fixed height)</p>-->
         </div>
     </div>
 </body>
