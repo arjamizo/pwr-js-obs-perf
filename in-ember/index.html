@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ember's test</title>
+</head>
+<body>
+    <script>
+        window.addEventListener("load", function() {
+            var argument = location.hash.substr(1) * 1;
+            document.title = "Ember's test - expected "+argument+"ms";
+            document.body.start=window.performance.now();
+            console.log("start", document.body.start)
+            setTimeout(function () {
+                document.body.end = window.performance.now()
+                console.log("stop", document.body.end)
+            }, argument);
+        })
+    </script>
+</body>
+</html>

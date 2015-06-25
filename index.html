@@ -46,8 +46,35 @@
 <body>
     <script type="application/javascript">
         'use strict';
+
+        var data={tests:[{name: "AngularJS 1k adds", time: 123}, {name: "AngularJS 10k adds", time: 1230}]};
+        function createTestHandler(name) {
+            console.log(name);
+            return function() {
+                return new Promise(function(res, rej){
+                    var $ = document.querySelector;
+                    var frame, callback;
+                    frame=document.querySelector('iframe');
+                    frame.contentDocument.body['end']=0;
+                    frame.contentWindow.location.reload(true);
+                    frame.src=name;
+                    console.log('new url:', frame.src)
+                    setTimeout(callback=function() {
+                        if(frame.contentDocument && frame.contentDocument.body && frame.contentDocument.body.end)
+                            res({name: frame.contentDocument.title, time: frame.contentDocument.body.end-frame.contentDocument.body.start});
+                        else {
+                            // console.log("callback call", frame.contentDocument.body.innerHTML.length);
+                            setTimeout(callback, 500);
+                        }
+                    }, 500)
+                }).then(function(res){console.log(res.name, res.time); return res;})
+            }
+        }
         window.addEventListener('load', function() {
             console.log("Hello world!");
+            var tests = ["in-angular/index.html", "in-ember/index.html#1337", "in-ember/index.html#2337", "in-riot/index.html"];
+            createTestHandler(tests[2])()
+                .then(createTestHandler(tests[1]));
         });
     </script>
 
@@ -55,6 +82,18 @@
         <div class="row header">
             <p>
                 <h1>Tests</h1>
+                <ul id="tests">
+                    <script>
+                        setInterval(function(){
+                            // console.log(typeof i,i,e);
+                            // data.tests.push({name: "Angular 1k adds", time: 123});
+                            // console.assert(typeof i == "number");
+                            document.querySelector('#tests').innerHTML="<li>"+data.tests.map(function(e,i) {
+                                return e.name + ": " + e.time + "ms";
+                            }).join("</li><li>")+"</li>";
+                        }, 1000);
+                    </script>
+                </ul>
             </p>
         </div>
         <div class="row content">
