@@ -79,9 +79,11 @@
         }
         window.addEventListener('load', function() {
             console.log("Hello world!");
-            var tests = ["in-angular/index.html", "in-ember/index.html#1337", "in-ember/index.html#2337", "in-riot/index.html"];
+            var tests = ["in-ember/index.html", "in-ember/index.html#1337", "in-ember/index.html#2337", "in-riot/index.html"];
             createTestHandler(tests[2])()
-                .then(createTestHandler(tests[1]));
+                .then(createTestHandler(tests[1]))
+                .then(createTestHandler(tests[0]))
+            ;
         });
     </script>
 
