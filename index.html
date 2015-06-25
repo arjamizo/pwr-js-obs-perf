@@ -47,7 +47,9 @@
     <script type="application/javascript">
         'use strict';
 
-        var data={tests:[{name: "AngularJS 1k adds", time: 123}, {name: "AngularJS 10k adds", time: 1230}]};
+        var data={tests:[
+//            {name: "AngularJS 1k adds", time: 123}, {name: "AngularJS 10k adds", time: 1230}
+        ]};
         function createTestHandler(name) {
             console.log(name);
             return function() {
@@ -67,7 +69,12 @@
                             setTimeout(callback, 500);
                         }
                     }, 500)
-                }).then(function(res){console.log(res.name, res.time); return res;})
+                })
+                        .then(function(res){console.log(res.name, res.time); return res;})
+                        .then(function(res){
+                            res.time=res.time.toFixed(0);
+                            data.tests.push(res); return res;
+                        })
             }
         }
         window.addEventListener('load', function() {
