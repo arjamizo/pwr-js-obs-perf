@@ -79,11 +79,14 @@
         }
         window.addEventListener('load', function() {
             console.log("Hello world!");
-            var tests = ["in-ember/index.html", "in-ember/index.html#1337", "in-ember/index.html#2337", "in-riot/index.html"];
-            createTestHandler(tests[2])()
-                .then(createTestHandler(tests[1]))
-                .then(createTestHandler(tests[0]))
-            ;
+            var tests = ["in-ember/index.html", "in-ember/index.html#1337", "in-ember/index.html#2337", "in-ember/index.html#123"];
+            var mainPromise = createTestHandler(tests[0])();
+            tests
+                    .filter(function(e,i,a) { return i>0; })
+                    .map(function(e,i) {
+                        console.log('name', e);
+                        mainPromise=mainPromise.then(createTestHandler(e));
+                    })
         });
     </script>
 
