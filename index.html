@@ -51,7 +51,6 @@
 //            {name: "AngularJS 1k adds", time: 123}, {name: "AngularJS 10k adds", time: 1230}
         ]};
         function createTestHandler(name) {
-            console.log(name);
             return function() {
                 return new Promise(function(res, rej){
                     var $ = document.querySelector;
@@ -78,15 +77,20 @@
             }
         }
         window.addEventListener('load', function() {
-            console.log("Hello world!");
             var tests = ["in-ember/index.html", "in-ember/index.html#1337", "in-ember/index.html#2337", "in-ember/index.html#123"];
             var mainPromise = createTestHandler(tests[0])();
             tests
                     .filter(function(e,i,a) { return i>0; })
                     .map(function(e,i) {
-                        console.log('name', e);
                         mainPromise=mainPromise.then(createTestHandler(e));
                     })
+            mainPromise.then(function() {
+                console.info("All tests succeeded.");
+                function persistResults() {
+                    console.log("HTTP req to /save with "+document.querySelector("#tests-txt").value);
+                };
+                setTimeout(persistResults, 1000); //view updated each 1s
+            })
         });
     </script>
 
@@ -100,12 +104,18 @@
                             // console.log(typeof i,i,e);
                             // data.tests.push({name: "Angular 1k adds", time: 123});
                             // console.assert(typeof i == "number");
+                            var txt="";
                             document.querySelector('#tests').innerHTML="<li>"+data.tests.map(function(e,i) {
+                                txt+= e.name+";"+ e.time+"\n";
                                 return e.name + ": " + e.time + "ms";
                             }).join("</li><li>")+"</li>";
+
+                            document.querySelector('#tests-txt').value=txt;
+
                         }, 1000);
                     </script>
                 </ul>
+                <textarea id='tests-txt'></textarea>
             </p>
         </div>
         <div class="row content">
