@@ -16,7 +16,7 @@
                 $scope.localStorage=window.localStorage;
                 $scope.todos = JSON.parse(localStorage.getItem("todos")) || $scope.todos;
                 console.log('read from localStorage', $scope.todos);
-                $scope.$watchCollection('todos', function(newval, oldval) {
+                $scope.$watch('todos', function(newval, oldval) {
                     if($scope.saveToLS)
                         localStorage.setItem("todos", JSON.stringify(newval.map(function(e) {return {title: e.title, completed: e.completed};})));
                     console.log('saved to localStorage', localStorage.getItem("todos"));
