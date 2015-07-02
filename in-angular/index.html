@@ -5,6 +5,23 @@
     <title>AngularJS • To do app</title>
     <script src="../bower_components/angular/angular.js"></script>
     <script type="text/javascript">
+        var _ = {};
+        _.range = function(start, stop, step) {
+            if (stop == null) {
+                stop = start || 0;
+                start = 0;
+            }
+            step = step || 1;
+
+            var length = Math.max(Math.ceil((stop - start) / step), 0);
+            var range = Array(length);
+
+            for (var idx = 0; idx < length; idx++, start += step) {
+                range[idx] = start;
+            }
+
+            return range;
+        };
         'use strict';
         var m=angular.module("todoapp", []);
         m.controller("todoctrl", function($scope, $log){
@@ -22,7 +39,20 @@
                     console.log('saved to localStorage', localStorage.getItem("todos"));
                 }, true);
             }
+            if(location.hash) {
+                var lh=location.hash.substr(1).split(';');
+                lh=lh.map(function(e){return e.split(/[(), ]+/)});
+                var handlers = {
+                    'add': function(number) {
+                        $scope.todos.push.apply($scope.todos, number*1==number?_.range(0, number):number);
+                    }
+                }
+                var cpy;
+                lh=lh.map(function(e){return handlers[e[0]].call(null, e[1]*1)});
+                console.log(lh)
+            }
         })
+        //could use http://stackoverflow.com/a/20664122/781312 but angular.run is exec too early
     </script>
 </head>
 <body>
