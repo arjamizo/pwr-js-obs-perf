@@ -22,16 +22,30 @@
 
             return range;
         };
+        _.copy = function( src, dest) {
+            if (!src || !dest) return;
+            for (var i in Object.keys(src)) {
+                dest[i]=src[i];
+            }
+        }
+        _.empty = function(obj) {
+            for(var i in Object.keys(obj)) {
+                delete obj[i];
+            }
+        }
         'use strict';
         var m=angular.module("todoapp", []);
-        m.controller("todoctrl", function($scope, $log){
-            $scope.todos=[];
+        window.todos=[];
+        m.controller("todoctrl", function($scope, $log, $timeout){
+            $scope.todos=window.todos || [];
+            window.$digest = $scope.$digest.bind($scope);
             $scope.$log = $log;
             $scope.addTodo=function(title, keeptitle) {$scope.todos.push({title:title}); console.log(keeptitle); if(!keeptitle) $scope.title="";};
             $scope.removeTodo=function(todo) {$scope.todos.splice($scope.todos.indexOf(todo), 1);};
             if(window.localStorage) {
                 $scope.localStorage=window.localStorage;
-                $scope.todos = JSON.parse(localStorage.getItem("todos")) || $scope.todos;
+                _.empty($scope.todos);
+                _.copy(JSON.parse(localStorage.getItem("todos")), $scope.todos);
                 console.log('read from localStorage', $scope.todos);
                 $scope.$watch('todos', function(newval, oldval) {
                     if($scope.saveToLS)
@@ -58,7 +72,11 @@
                 lh=lh.map(function(e){return handlers[e[0]].apply(null, (cpy=e, cpy.splice(1)))});
                 console.log(lh)
             }
-        })
+        });
+        setTimeout(function(){
+            window.todos.push({title: "added always on startup"});
+            window.$digest();
+        }, 2000);
         //could use http://stackoverflow.com/a/20664122/781312 but angular.run is exec too early
     </script>
 </head>
