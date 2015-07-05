@@ -77,7 +77,14 @@
             }
         }
         window.addEventListener('load', function() {
-            var tests = ["in-ember/index.html", "in-ember/index.html#1337", "in-ember/index.html#2337", "in-ember/index.html#123"];
+            var tests = [
+                "in-angular/index.html#add(100)",
+                "in-angular/index.html#add(100)",
+                "in-angular/index.html#add(1000)",
+                "in-angular/index.html#add(1000)",
+                "in-angular/index.html#add(10000)",
+                "in-angular/index.html#add(10000)",
+                "in-ember/index.html", "in-ember/index.html#1337", "in-ember/index.html#2337", "in-ember/index.html#123"];
             var mainPromise = createTestHandler(tests[0])();
             tests
                     .filter(function(e,i,a) { return i>0; })

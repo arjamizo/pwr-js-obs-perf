@@ -44,11 +44,18 @@
                 lh=lh.map(function(e){return e.split(/[(), ]+/)});
                 var handlers = {
                     'add': function(number) {
-                        $scope.todos.push.apply($scope.todos, number*1==number?_.range(0, number):number);
+                        var toAdd = number*1==number?_.range(0, number):number;
+                        document.body.start = window.performance.now();
+                        $scope.todos.push.apply($scope.todos, toAdd);
+                        $timeout(function(scope) {
+                            console.log("done", document.getElementsByTagName('li').length>=number);
+                            document.body.end = window.performance.now();
+                            console.info("time: ", document.body.end-document.body.start);
+                        }, 0)
                     }
                 }
                 var cpy;
-                lh=lh.map(function(e){return handlers[e[0]].call(null, e[1]*1)});
+                lh=lh.map(function(e){return handlers[e[0]].apply(null, (cpy=e, cpy.splice(1)))});
                 console.log(lh)
             }
         })
