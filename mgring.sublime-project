@@ -1,0 +1,23 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings":
+		{
+			"tab_size": 8
+		},
+	"build_systems":
+	[
+		{
+			"name": "Build LaTeX for currently opened file",
+			"cmd": ["make", "$file_base_name"]
+		},
+		{
+			"name": "Build final project",
+			"cmd": ["make", "mgring"]
+		}
+	]
+}
