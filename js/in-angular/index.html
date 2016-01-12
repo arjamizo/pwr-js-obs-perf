@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html ng-app="todoapp">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>AngularJS • To do app</title>
+    <script src="../bower_components/angular/angular.js"></script>
+    <script type="text/javascript">
+        var _ = {};
+        _.range = function(start, stop, step) {
+            if (stop == null) {
+                stop = start || 0;
+                start = 0;
+            }
+            step = step || 1;
+
+            var length = Math.max(Math.ceil((stop - start) / step), 0);
+            var range = Array(length);
+
+            for (var idx = 0; idx < length; idx++, start += step) {
+                range[idx] = start;
+            }
+
+            return range;
+        };
+        _.copy = function( src, dest) {
+            if (!src || !dest) return;
+            for (var i in Object.keys(src)) {
+                dest[i]=src[i];
+            }
+        }
+        _.empty = function(obj) {
+            for(var i in Object.keys(obj)) {
+                delete obj[i];
+            }
+        }
+        'use strict';
+        var m=angular.module("todoapp", []);
+        window.todos=[];
+        m.controller("todoctrl", function($scope, $log, $timeout){
+            $scope.todos=window.todos || [];
+            window.$digest = $scope.$digest.bind($scope);
+            $scope.$log = $log;
+            $scope.addTodo=function(title, keeptitle) {$scope.todos.push({title:title}); console.log(keeptitle); if(!keeptitle) $scope.title="";};
+            $scope.removeTodo=function(todo) {$scope.todos.splice($scope.todos.indexOf(todo), 1);};
+            if(window.localStorage) {
+                $scope.localStorage=window.localStorage;
+                _.empty($scope.todos);
+                _.copy(JSON.parse(localStorage.getItem("todos")), $scope.todos);
+                console.log('read from localStorage', $scope.todos);
+                $scope.$watch('todos', function(newval, oldval) {
+                    if($scope.saveToLS)
+                        localStorage.setItem("todos", JSON.stringify(newval.map(function(e) {return {title: e.title, completed: e.completed};})));
+                    console.log('saved to localStorage', localStorage.getItem("todos"));
+                }, true);
+            }
+            if(location.hash) {
+                var lh=location.hash.substr(1).split(';');
+                lh=lh.map(function(e){return e.split(/[(), ]+/)});
+                var handlers = {
+                    'add': function(number) {
+                        var toAdd = number*1==number?_.range(0, number):number;
+                        document.body.start = window.performance.now();
+                        $scope.todos.push.apply($scope.todos, toAdd);
+                        $timeout(function(scope) {
+                            console.log("done", document.getElementsByTagName('li').length>=number);
+                            document.body.end = window.performance.now();
+                            console.info("time: ", document.body.end-document.body.start);
+                        }, 0)
+                    }
+                }
+                var cpy;
+                lh=lh.map(function(e){return handlers[e[0]].apply(null, (cpy=e, cpy.splice(1)))});
+                console.log(lh)
+            }
+        });
+        setTimeout(function(){
+            window.todos.push({title: "added always on startup"});
+            window.$digest();
+        }, 2000);
+        //could use http://stackoverflow.com/a/20664122/781312 but angular.run is exec too early
+    </script>
+</head>
+<body>
+    <div ng-controller="todoctrl">
+        <ul>
+            <li ng-repeat="todo in todos"><input type="checkbox" ng-model="todo.completed"/>{{todo.title}}<button ng-click="removeTodo(todo)">&#x2717;</button></li>
+        </ul>
+        <input ng-model="title" ng-keyup="$event.keyCode==13 && addTodo(title)"/>
+        <button ng-click="addTodo(title, keeptitle)">add</button>
+        (Keep title after adding: <input type="checkbox" checked="checked" ng-model="keeptitle"/>)
+        (Save to localstorage: <input type="checkbox" ng-model="saveToLS">)
+        <button ng-click="localStorage.removeItem('todos') && $log.info('cleared LS') && todos.splice(0, todos.length)">clear localStorage</button>
+    </div>
+</body>
+</html>
