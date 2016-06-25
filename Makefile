@@ -8,7 +8,7 @@ VPATH = tex materials build
 
 # This Makefile installs all required dependencies on Ubuntu, without any extra dependencies. The whole installation takes about 186MB+67M=253MB
 
-hascompiler: materials
+hascompiler: # materials
 	which pdflatex || sudo apt-get install texlive-latex-base
 	which pdflatex
 	which xzdec || sudo apt-get install xzdec
