@@ -1,12 +1,15 @@
-\documentclass[inzynier,druk,ramka]{tex/dyplom}
+\documentclass[inzynier,druk,ramka]{build/dyplom}
 \usepackage[utf8]{inputenc}
 \usepackage{hyperref}
 %%
 \usepackage[toc]{appendix}
+\usepackage{listings}
+
 \renewcommand{\appendixtocname}{Appendix}
 \renewcommand{\appendixpagename}{Appendix}
 %%
 \usepackage{listings}
+\include{mymods}
 
 %\noappendicestocpagenum
 \usepackage{lipsum}
@@ -16,7 +19,7 @@
 \author{Artur Zochniak}
 \title{Porównanie wydajności wzorca projektowego obserwator w różnych frameworkach w języku JavaScript}
 \titlen{Performance comparison of observer design pattern implementations in JavaScript}
-\promotor{dr inż. Tomasz Walkowiak, I-?}
+\promotor{dr inż. Tomasz Walkowiak, \_instytut\_}
 %\konsultant{?}
 \wydzial{Wydział Elektroniki}
 \kierunek{Informatyka}
@@ -26,38 +29,146 @@
 
 \maketitle
 
-\tableofcontents
+% \tableofcontents
 
-\listoffigures
+% \listoffigures
 
-\listoftables
+% \listoftables
 
 % \input{readme}
-
-\chapter{Thanks}
 
 \include{thanks}
 
 \chapter{Introduction}
-JavaScript is an interpretable language created by Netscape in late 70’. It is widely used in web development and, since some time, even on server side. This master thesis focuses on its usage in web development. JavaScript allows gives dynamism to webpages by allowing changing content in runtime, but since JavaScript is just a language, problem of creation and further development of complex application is solved by various JavaScript frameworks. Those frameworks have obviously different implementations, therefore their performance might vary a lot, depending on their internal architecture, approach to the problem and other criteria. 
+JavaScript is an interpretable language created by Netscape in late 70’. It is widely used in web development and, since some time, even on server side. This master thesis focuses on its usage in web development. JavaScript allows gives dynamism to webpages by allowing changing content in runtime, but since JavaScript is just a language, problem of creation and further development of complex application is solved by various JavaScript frameworks. Those frameworks have obviously different implementations, therefore their performance might vary a lot, depending on their internal architecture, approach to the problem and other criteria.
 
-Javascript is dynamic, prototype-based cross-platform programming language. 
-This article describes differences in implementation of observer design pattern in two JavaScript frameworks: AngularJS and EmberJS and tries to answer which one is faster and tries to explain the answer. 
-First chapter provides background when and why JavaScript was created. 
+Javascript is dynamic, prototype-based cross-platform programming language.
+This article describes differences in implementation of observer design pattern in two JavaScript frameworks: AngularJS and EmberJS and tries to answer which one is faster and tries to explain the answer.
+First chapter provides background when and why JavaScript was created.
 Second chapter describes short overview what does look like benchmarking environment.
 
 \section{Background}
 
-When Internet was born, it was mainly read-only. There was no interaction from reader’s point of view. This was era of HTML. Communication was possi-ble via email or IRC. In 1995 Netscape Communications Corporation (especially team led by Brendan Eich) came up with a language which allowed performing manipulations on DOM. It’s popularity was rising and later every internet brows-er manufacturer implemented features described in its JavaScript’s specification  . As the Internet was becoming popular, there was demand for more interactivi-ty, which would allow users to influence webpage contents, which is necessary for giving users ability to create and publish content by themselves. At the begin-ning webpages made experience of browsing the internet smoother by introduc-ing techniques like Ajax or DHTML, but as there were more content and bigger applications to manage, in order to make theirs further development possible, frameworks were introduced. Since that time developers may think in somehow unified way about solving similar tasks like how to organize structure of an ap-plication or how to fetch data from the server. 
-Research by Google  had shown that forcing user to wait even fraction of a second - drops down the satisfaction coming from experience of browsing webpage significantly, therefore problem of high performance is extremely im-portant from the point of view of acquiring new and keeping current clients satis-fied and happy. 
+When Internet was born, it was mainly read-only. There was no interaction from reader’s point of view. This was era of HTML. Communication was possi-ble via email or IRC. In 1995 Netscape Communications Corporation (especially team led by Brendan Eich) came up with a language which allowed performing manipulations on DOM. It’s popularity was rising and later every internet brows-er manufacturer implemented features described in its JavaScript’s specification  . As the Internet was becoming popular, there was demand for more interactivi-ty, which would allow users to influence webpage contents, which is necessary for giving users ability to create and publish content by themselves. At the begin-ning webpages made experience of browsing the internet smoother by introduc-ing techniques like Ajax or DHTML, but as there were more content and bigger applications to manage, in order to make theirs further development possible, frameworks were introduced. Since that time developers may think in somehow unified way about solving similar tasks like how to organize structure of an ap-plication or how to fetch data from the server.
+Research by Google  had shown that forcing user to wait even fraction of a second - drops down the satisfaction coming from experience of browsing webpage significantly, therefore problem of high performance is extremely im-portant from the point of view of acquiring new and keeping current clients satis-fied and happy.
 
 \section{Benchmarking}
-In order to measure differences in performance simple application allowing to manage "to do" list was created. Application allows inserting, modifying and deleting elements and changes are immediately presented in browser client. 
+In order to measure differences in performance simple application allowing to manage "to do" list was created. Application allows inserting, modifying and deleting elements and changes are immediately presented in browser client.
 The crucial part of benchmarking is ensuring that the measurement involves only time when data are actually processed, not generated, therefore mechanism postponing measurements was introduced (it is described more precisely in chapter 5). Since tests require not only adding elements, but also modifying them - benchmarking tool gives ability to access entries directly, which makes performance tests more reproducible (having direct access to objects, in the opposite of finding elements by their keys or replacing them with new elements decreases time for generating intermediate data). This was achieved by ensuring that benchmarking tool has direct access to objects.
+
+\chapter{Angular 1.4}
+
+Angular is a framework which uses MVC approach. Thanks to `services`, `controllers` and `values` and possiblity of two-way-data-binding just in XHTML templates - it allows easy setup of an application.
+
+\section{Template}
+
+Template assumes that userr is able to add new entries and delete them.
+
+\begin{lstlisting}
+    <div ng-controller="todoctrl">
+        <ul>
+            <li ng-repeat="todo in todos"><input type="checkbox" ng-model="todo.completed"/>{{todo.title}}<button ng-click="removeTodo(todo)">&#x2717;</button></li>
+        </ul>
+        <input ng-model="title""/>
+        <button ng-click="addTodo(title, keeptitle)">add</button>
+    </div>
+\end{lstlisting}
+
+The template was extended, so user can perform actions in an invuitive way (for example: enter adds new entry) and finally template is the following:
+
+\begin{lstlisting}
+    <div ng-controller="todoctrl">
+        <ul>
+            <li ng-repeat="todo in todos"><input type="checkbox" ng-model="todo.completed"/>{{todo.title}}<button ng-click="removeTodo(todo)">&#x2717;</button></li>
+        </ul>
+        <input ng-model="title" ng-keyup="$event.keyCode==13 && addTodo(title)"/>
+        <button ng-click="addTodo(title, keeptitle)">add</button>
+        (Keep title after adding: <input type="checkbox" checked="checked" ng-model="keeptitle"/>)
+        (Save to localstorage: <input type="checkbox" ng-model="saveToLS">)
+        <button ng-click="localStorage.removeItem('todos') && $log.info('cleared LS') && todos.splice(0, todos.length)">clear localStorage</button>
+    </div>
+\end{lstlisting}
+
+\section{Angular life-cycle}
+
+%\lstinputlisting[language=Python]{source_filename.py}
+
+AngularJS's life cycle bases on watching expressions needed for rendering the view \cite{angularlifecycle}
+
+\begin{lstlisting}
+lastDirtyWatch = null;
+
+        do { // "while dirty" loop
+          dirty = false;
+          current = target;
+
+          // It's safe for asyncQueuePosition to be a local variable here because this loop can't
+          // be reentered recursively. Calling $digest from a function passed to $applyAsync would
+          // lead to a '$digest already in progress' error.
+          for (var asyncQueuePosition = 0; asyncQueuePosition < asyncQueue.length; asyncQueuePosition++) {
+            try {
+              asyncTask = asyncQueue[asyncQueuePosition];
+              asyncTask.scope.$eval(asyncTask.expression, asyncTask.locals);
+            } catch (e) {
+              $exceptionHandler(e);
+            }
+            lastDirtyWatch = null;
+          }
+          asyncQueue.length = 0;
+
+          traverseScopesLoop:
+          do { // "traverse the scopes" loop
+            if ((watchers = current.$$watchers)) {
+              // process our watches
+              length = watchers.length;
+              while (length--) {
+                try {
+                  watch = watchers[length];
+                  // Most common watches are on primitives, in which case we can short
+                  // circuit it with === operator, only when === fails do we use .equals
+                  if (watch) {
+                    // cutted-out: exec watch
+                  }
+                } catch (e) {
+                  $exceptionHandler(e);
+                }
+              }
+            }
+
+            // Insanity Warning: scope depth-first traversal
+            // yes, this code is a bit crazy, but it works and we have tests to prove it!
+            // this piece should be kept in sync with the traversal in $broadcast
+            if (!(next = ((current.$$watchersCount && current.$$childHead) ||
+                (current !== target && current.$$nextSibling)))) {
+              while (current !== target && !(next = current.$$nextSibling)) {
+                current = current.$parent;
+              }
+            }
+          } while ((current = next));
+
+          // `break traverseScopesLoop;` takes us to here
+
+          if ((dirty || asyncQueue.length) && !(ttl--)) {
+            clearPhase();
+            throw $rootScopeMinErr('infdig',
+                '{0} $digest() iterations reached. Aborting!\n' +
+                'Watchers fired in the last 5 iterations: {1}',
+                TTL, watchLog);
+          }
+
+        } while (dirty || asyncQueue.length);
+\end{lstlisting}
+Source: AngularJS \cite{angulardigest}
+
+Code above shows that Angular, in its `rootScope.\$digest` method does depth-first search for all the \_watches\_ and then recalculates all needed values.
 
 \chapter{EmberJS}
 
 \subsection{Introduction}
+
+\subsection{Templating}
+
+\subsection{Crucial performance points}
 
 \cite{ember2014}
 
@@ -68,7 +179,7 @@ The crucial part of benchmarking is ensuring that the measurement involves only 
 
 \bibitem{ember2014}
   http://williamhart.info/an-emberjs-beginners-tutorial/
-  
+
 \bibitem{cljs2015}
 https://github.com/magomimmo/modern-cljs
 
@@ -77,6 +188,12 @@ http://guides.emberjs.com/v1.10.0/models/creating-and-deleting-records/
 
 \bibitem{emberdebouncethrottle}
 http://alexspeller.com/debounced-and-throttled-observers-in-ember-js/
+
+\bibitem{angulardigest}
+ https://github.com/angular/angular.js/blob/master/src/ng/rootScope.js\#L695-L864
+
+\bibitem{angularlifecycle}
+ https://thinkster.io/a-better-way-to-learn-angularjs
 
 \end{thebibliography}
 \end{document}

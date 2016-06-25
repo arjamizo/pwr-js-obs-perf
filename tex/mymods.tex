@@ -1,0 +1,18 @@
+% http://tex.stackexchange.com/questions/116534/lstlisting-line-wrapping
+\lstset{
+    frame=single,
+    breaklines=true,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}}
+}
+\lstdefinelanguage{numpy}{
+    keywords = {
+        and,del,from,not,while,
+        as,elif,global,or,with,
+        assert,else,if,pass,yield,
+        break,except,import,print,
+        class,exec,in, raise,continue,
+        finally,is, return,def,for,
+        lambda,try
+    },
+    morekeywords = {numpy,fft,mean}
+}
