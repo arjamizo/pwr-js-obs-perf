@@ -29,7 +29,9 @@ haspwr: dyplom.cls
 	#http://unix.stackexchange.com/a/125102/63341
 
 mgring: mgring.tex hascompiler haspwr
-	$C --output-directory=$(BUILDDIR) $< #Translates to `pdflatex mgring`, note $< translates to first dependency (could be even indirect)
+	echo $<
+	exit
+	#$C --output-directory=$(BUILDDIR) $< #Translates to `pdflatex mgring`, note $< translates to first dependency (could be even indirect)
 
 ci: mgring.tex
 	# meant to provide constant monitoring of a file and compilation when content changes and is a valid file
