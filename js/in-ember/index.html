@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Ember's test</title>
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/ember/ember.js"></script>
+    <script src="../bower_components/ember/ember-template-compiler.js"></script>
 </head>
 <body>
     <script>
@@ -16,6 +19,26 @@
                 console.log("stop", document.body.end)
             }, argument);
         })
+
+        var Notes = Ember.Application.create({
+        });
+
+        Notes.Router.map(function () {
+            this.resource('notes', {path: "/"}, function() {
+            this.route('note', {path: "/note/:note_id"});
+            });
+        });
     </script>
+    <script type="text/x-handlebars" id="application">
+        Hello Notes Application!
+    </script>
+
+    <script type="text/x-handlebars" id="notes">
+        Defines template named notes
+        <div id="notes" class="azureBlueBackground azureBlueBorderThin">
+            Wraps template Adds text field to template {{input}} contents inside
+            <button class="btn btn-default btn-xs">Button</button>
+        </div>
+</script>
 </body>
 </html>
