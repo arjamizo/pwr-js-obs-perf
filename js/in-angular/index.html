@@ -44,14 +44,17 @@
             $localStorage.$storage = $localStorage.$default({
                 todos: []
             });
-            return $localStorage.$storage.todos;
+            return [];
+            // return $localStorage.$storage.todos;
         })
         
         m.controller("todoctrl", function($scope, $log, todosModel, $localStorage, $routeParams) {
             
-            console.log('toods', todosModel, 'arg', $routeParams, $routeParams.arg)
+            // console.log('toods', todosModel, 'arg', $routeParams, $routeParams.arg)
+            
             $scope.todos = todosModel;
             window.$digest = $scope.$digest.bind($scope);
+            window.scope = $scope;
             
             $scope.addTodo = function(title, keeptitle) {
                 $scope.todos.push({title: title});
@@ -69,41 +72,34 @@
                 // if(!val) todosModel = [];
                 // $scope.todos = (val && todosModel) || _todos; 
             })
-
-            // if(location.hash) {
-            //     var lh=location.hash.substr(1).split(';');
-            //     lh=lh.map(function(e){return e.split(/[(), ]+/)});
-            //     var handlers = {
-            //         'add': function(number) {
-            //             var toAdd = number*1==number?_.range(0, number):number;
-            //             document.body.start = window.performance.now();
-            //             $scope.todos.push.apply($scope.todos, toAdd);
-            //             $timeout(function(scope) {
-            //                 console.log("done", document.getElementsByTagName('li').length>=number);
-            //                 document.body.end = window.performance.now();
-            //                 console.info("time: ", document.body.end-document.body.start);
-            //             }, 0)
-            //         }
-            //     }
-            //     var cpy;
-            //     lh=lh.map(function(e){return handlers[e[0]].apply(null, (cpy=e, cpy.splice(1)))});
-            //     console.log(lh)
-            // }
+            
+            var arg = $routeParams.arg;
+            if (arg) {
+                console.log('start')
+                $scope.todos.splice(0); // $scope.todos = [] would change reference thus view does not work 
+                document.body.start = window.performance.now();
+                for(var i = 1; i <= 1*arg; ++i) 
+                    $scope.todos.push({title: 'test'+i})
+                    //, console.info('progress');
+                
+                setTimeout(function Monitoring() {
+                    var len = document.getElementsByTagName('ul')[0].childNodes.length;
+                    if (len<arg)
+                        setTimeout(Monitoring, 100);
+                    else {
+                        document.body.end = window.performance.now();
+                        console.info("time: ", document.body.end-document.body.start);
+                    }
+                }, 100);
+            }
         });
         
-        // if(0) 
         m.config(function($provide, $routeProvider) {
             
             $routeProvider.when('/add', {controller: 'todoctrl', template: ''});
             $routeProvider.when('/add/:arg', {controller: 'todoctrl', template: ''});
             $routeProvider.otherwise({redirectTo: '/add'});
             
-            // $provide.decorator('todoctrl', function($delegate, $log, $routeParams) {
-            //     if($routeParams.arg) {
-            //         $log('routecalled');
-            //     }
-            //     $log('decorator');
-            // })
         })
         
         setTimeout(function() {
