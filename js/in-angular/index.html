@@ -92,12 +92,10 @@
         });
         
         // if(0) 
-        m.config(function($routeProvider) { // $provide
+        m.config(function($provide, $routeProvider) {
             
-            console.log('ee', $routeProvider)
-            
-            $routeProvider.when('/add', {controller: 'todoctrl', template: '123'});
-            $routeProvider.when('/add/:arg', {controller: 'todoctrl', template: '234'});
+            $routeProvider.when('/add', {controller: 'todoctrl', template: ''});
+            $routeProvider.when('/add/:arg', {controller: 'todoctrl', template: ''});
             $routeProvider.otherwise({redirectTo: '/add'});
             
             // $provide.decorator('todoctrl', function($delegate, $log, $routeParams) {
