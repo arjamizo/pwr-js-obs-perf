@@ -62,7 +62,11 @@
                     console.log('new url:', frame.src)
                     setTimeout(callback=function() {
                         if(frame.contentDocument && frame.contentDocument.body && frame.contentDocument.body.end)
-                            res({name: frame.contentDocument.title, time: frame.contentDocument.body.end-frame.contentDocument.body.start});
+                            res({
+                                name: frame.contentDocument.title, 
+                                time: frame.contentDocument.body.end-frame.contentDocument.body.start,
+                                size: name.match(/[0-9]+/)
+                            });
                         else {
                             // console.log("callback call", frame.contentDocument.body.innerHTML.length);
                             setTimeout(callback, 500);
@@ -72,18 +76,19 @@
                         .then(function(res){console.log(res.name, res.time); return res;})
                         .then(function(res){
                             res.time=res.time.toFixed(0);
-                            data.tests.push(res); return res;
+                            data.tests.push(res); 
+                            return res;
                         })
             }
         }
         window.addEventListener('load', function() {
             var tests = [
-                "in-angular/index.html#add(100)",
-                "in-angular/index.html#add(100)",
-                "in-angular/index.html#add(1000)",
-                "in-angular/index.html#add(1000)",
-                "in-angular/index.html#add(10000)",
-                "in-angular/index.html#add(10000)",
+                "in-angular/index.html#/add/100",
+                "in-angular/index.html#/add/100",
+                "in-angular/index.html#/add/1000",
+                "in-angular/index.html#/add/1000",
+                "in-angular/index.html#/add/10000",
+                "in-angular/index.html#/add/10000",
                 "in-ember/index.html", "in-ember/index.html#1337", "in-ember/index.html#2337", "in-ember/index.html#123"];
             var mainPromise = createTestHandler(tests[0])();
             tests
@@ -111,10 +116,10 @@
                             // console.log(typeof i,i,e);
                             // data.tests.push({name: "Angular 1k adds", time: 123});
                             // console.assert(typeof i == "number");
-                            var txt="";
+                            var txt = "";
                             document.querySelector('#tests').innerHTML="<li>"+data.tests.map(function(e,i) {
-                                txt+= e.name+";"+ e.time+"\n";
-                                return e.name + ": " + e.time + "ms";
+                                txt += e.name+";"+ e.time+","+e.size+"\n";
+                                return e.size + " elements, " + e.time + " ms, " + e.name;
                             }).join("</li><li>")+"</li>";
 
                             document.querySelector('#tests-txt').value=txt;
