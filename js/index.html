@@ -65,6 +65,7 @@
                             res({
                                 name: frame.contentDocument.title, 
                                 time: frame.contentDocument.body.end-frame.contentDocument.body.start,
+                                first: frame.contentDocument.body.first-frame.contentDocument.body.start,
                                 size: name.match(/[0-9]+/)
                             });
                         else {
@@ -88,7 +89,9 @@
                 "in-angular/index.html#/add/1000",
                 "in-angular/index.html#/add/1000",
                 "in-angular/index.html#/add/10000",
-                "in-angular/index.html#/add/10000"];
+                "in-angular/index.html#/add/10000",
+                "in-angular/index.html#/add/20000",
+                "in-angular/index.html#/add/20000"];
             tests = tests.concat(...tests.map(e=>e.replace('angular', 'ember')))
             var mainPromise = createTestHandler(tests[0])();
             tests
@@ -110,6 +113,7 @@
         <div class="row header">
             <p>
                 <h1>Tests</h1>
+                <textarea id='tests-txt'></textarea>
                 <ul id="tests">
                     <script>
                         setInterval(function(){
@@ -118,7 +122,7 @@
                             // console.assert(typeof i == "number");
                             var txt = "";
                             document.querySelector('#tests').innerHTML="<li>"+data.tests.map(function(e,i) {
-                                txt += e.name+";"+ e.time+","+e.size+"\n";
+                                txt += e.name.match(/angular/)?"AngularJS":"EmberJS"+" & "+("    "+e.size).slice(-5)+" & "+e.first+" ms & "+e.time+" ms\n";
                                 return e.size + " elements, " + e.time + " ms, " + e.name;
                             }).join("</li><li>")+"</li>";
 
@@ -127,7 +131,6 @@
                         }, 1000);
                     </script>
                 </ul>
-                <textarea id='tests-txt'></textarea>
             </p>
         </div>
         <div class="row content">

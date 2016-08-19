@@ -66,32 +66,42 @@
                 $scope.todos.splice($scope.todos.indexOf(todo), 1);
             };
             
-            // $scope.ls = $localStorage.$default({saveToLS: true}) || {saveToLS: false};
             
             $scope.$watch('ls.saveToLS', function(val) {
                 // if(!val) todosModel = [];
                 // $scope.todos = (val && todosModel) || _todos; 
             })
             
+            var j = 0;
+            
             var arg = $routeParams.arg;
             if (arg) {
                 console.log('start')
                 $scope.todos.splice(0); // $scope.todos = [] would change reference thus view does not work 
+                $scope.$applyAsync('todos');
                 document.body.start = window.performance.now();
-                for(var i = 1; i <= 1*arg; ++i) 
-                    $scope.todos.push({title: 'test'+i})
-                    //, console.info('progress');
+                for(var i = 1; i <= 1*arg; ++i) {
+                    // setTimeout(function adding($scope) {
+                        // console.log('adding', j, $scope)
+                        $scope.todos.push({title: 'test'+ ++j});
+                        $scope.$applyAsync('todos')
+                    // }, i*10, $scope);
+                }
                 
                 setTimeout(function Monitoring() {
                     var len = document.getElementsByTagName('ul')[0].childNodes.length;
-                    if (len<arg)
-                        setTimeout(Monitoring, 100);
-                    else {
+                    if(len > 0 && !document.body.first) document.body.first = window.performance.now(), console.info('first');
+                    if (len < arg) {
+                        setTimeout(Monitoring, 10);
+                    } else {
                         document.body.end = window.performance.now();
                         console.info("time: ", document.body.end-document.body.start);
+                        console.info("first: ", document.body.first-document.body.start);
                     }
-                }, 50);
+                }, 10);
             }
+            
+            // $scope.ls = $localStorage.$default({saveToLS: true}) || {saveToLS: false};
         });
         
         m.config(function($provide, $routeProvider) {
