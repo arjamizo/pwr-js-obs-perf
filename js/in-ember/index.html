@@ -26,47 +26,58 @@
         /** Router **/
         Todos.Router.map(function () {
             this.resource('todos', {path: "/"}, function() {
-                this.route('todo', {path: "/todo/:todo_id"});
+                this.route('add', {path: "/add/:arg"});
             });
         });
 
         Todos.TodosRoute = Ember.Route.extend({
             model: function() {
-                return this.get('todos');
+                return this.get('todosModel');
             }
         });
-
-        Todos.TodosTodoRoute = Ember.Route.extend({
-            model: function(todo) {
-                return this.get('todos')[todo.todo_id];
+        
+        var n=0;
+        
+        Todos.TodosAddRoute = Ember.Route.extend({
+            controllerName: 'todos',
+            model: function(add) {
+                return this.get('todosModel')/*[add.arg]*/ || [{name: 314}];
+            },
+            afterModel: function(model, tr) {
+                var N = tr.params['todos.add'].arg;
+                setTimeout(function () {
+                    for(var i = 0; i<N; ++i) {
+                        (Todos.__container__.lookup('controller:todos').get('todosModel') || model).
+                        pushObject({"title": 'todo'+n++});
+                    }
+                }, 0)
             }
         });
 
         Todos.Todo = Ember.Object.extend({"title": ""});
 
         Todos.TodosController = Ember.Controller.extend({ // Ember.ArrayController deprecated in Ember 2.0
-            todos: [{title: "example"}],
-            // needs: ['todos'], // self-reference, can be accessed via #each controllers.todos
+            todosModel: [] || [{title: "example"}],
 
             actions: {
                 addTodo: function() {
                     var title = this.get('title');
                     console.log('el', title)
-                    this.get('todos').pushObject(Todos.Todo.create({
+                    this.get('todosModel').pushObject(Todos.Todo.create({
                         "title": title
                     }));
                 }
             }
         });
         
-        // Todos.__container__.lookup('controller:todos').get('todos').push({title: "321"}) // accessing directly
+        // Todos.__container__.lookup('controller:todos').get('todosModel').pushObject({title: "321"}) // accessing directly
 
     </script>
     <script type="text/x-handlebars" id="todos">
         {{input value=title}} <button {{action "addTodo"}}>add</button> {{title}}
         {{! todos replaces controller or controllers.todos in case of using `needs` }}
         <div class="list-group" style="margin-top: 10px;">
-            {{#each todos as |todo|}}  
+            {{#each todosModel as |todo|}}  
                 <div class="list-group-item">
                     {{todo.title}}
                 </div>
