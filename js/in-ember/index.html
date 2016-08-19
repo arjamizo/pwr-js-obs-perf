@@ -10,14 +10,8 @@
 <body>
     <script>
         window.addEventListener("load", function() {
-            var argument = location.hash.substr(1) * 1;
+            var argument = location.hash.match(/[0-9]+/) * 1;
             document.title = "Ember's test - expected "+argument+"ms";
-            document.body.start=window.performance.now();
-            console.log("start", document.body.start)
-            setTimeout(function () {
-                document.body.end = window.performance.now()
-                console.log("stop", document.body.end)
-            }, argument);
         })
 
         var Todos = Ember.Application.create({
@@ -45,12 +39,22 @@
             },
             afterModel: function(model, tr) {
                 var N = tr.params['todos.add'].arg;
+                document.body.start=window.performance.now();
                 setTimeout(function () {
                     for(var i = 0; i<N; ++i) {
                         (Todos.__container__.lookup('controller:todos').get('todosModel') || model).
                         pushObject({"title": 'todo'+n++});
                     }
                 }, 0)
+                setTimeout(function Monitoring() {
+                    var len = document.getElementsByTagName('ul')[0].childNodes.length;
+                    if (len < N)
+                        setTimeout(Monitoring, 100);
+                    else {
+                        document.body.end = window.performance.now();
+                        console.info("time: ", document.body.end-document.body.start);
+                    }
+                }, 50);
             }
         });
 
