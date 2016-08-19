@@ -20,25 +20,62 @@
             }, argument);
         })
 
-        var Notes = Ember.Application.create({
+        var Todos = Ember.Application.create({
         });
 
-        Notes.Router.map(function () {
-            this.resource('notes', {path: "/"}, function() {
-            this.route('note', {path: "/note/:note_id"});
+        /** Router **/
+        Todos.Router.map(function () {
+            this.resource('todos', {path: "/"}, function() {
+                this.route('todo', {path: "/todo/:todo_id"});
             });
         });
+
+        Todos.TodosRoute = Ember.Route.extend({
+            model: function() {
+                return this.get('todos');
+            }
+        });
+
+        Todos.TodosTodoRoute = Ember.Route.extend({
+            model: function(todo) {
+                return this.get('todos')[todo.todo_id];
+            }
+        });
+
+        Todos.Todo = Ember.Object.extend({"title": ""});
+
+        Todos.TodosController = Ember.Controller.extend({ // Ember.ArrayController deprecated in Ember 2.0
+            todos: [{title: "example"}],
+            // needs: ['todos'], // self-reference, can be accessed via #each controllers.todos
+
+            actions: {
+                addTodo: function() {
+                    var title = this.get('title');
+                    console.log('el', title)
+                    this.get('todos').pushObject(Todos.Todo.create({
+                        "title": title
+                    }));
+                }
+            }
+        });
+        
+        // Todos.__container__.lookup('controller:todos').get('todos').push({title: "321"}) // accessing directly
+
+    </script>
+    <script type="text/x-handlebars" id="todos">
+        {{input value=title}} <button {{action "addTodo"}}>add</button> {{title}}
+        {{! todos replaces controller or controllers.todos in case of using `needs` }}
+        <div class="list-group" style="margin-top: 10px;">
+            {{#each todos as |todo|}}  
+                <div class="list-group-item">
+                    {{todo.title}}
+                </div>
+            {{/each}}
+        </div>
     </script>
     <script type="text/x-handlebars" id="application">
-        Hello Notes Application!
+        {{outlet}}
     </script>
 
-    <script type="text/x-handlebars" id="notes">
-        Defines template named notes
-        <div id="notes" class="azureBlueBackground azureBlueBorderThin">
-            Wraps template Adds text field to template {{input}} contents inside
-            <button class="btn btn-default btn-xs">Button</button>
-        </div>
-</script>
 </body>
 </html>
