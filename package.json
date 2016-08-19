@@ -1,0 +1,32 @@
+{
+  "name": "pwr-js-obs-perf",
+  "version": "0.0.1",
+  "description": "PWr JavaScript Observer Design Pattern Performance Comparison",
+  "main": "server.js",
+  "scripts": {
+    "postinstall": "sh -c 'bower install; cd js; bower install'",
+    "deploy": "sh -c '(cd js; bower install)'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arjamizo/pwr-js-obs-perf.git"
+  },
+  "keywords": [
+    "javascript",
+    "performance",
+    "comparison",
+    "observer",
+    "ember",
+    "angular"
+  ],
+  "author": "Artur Zochniak",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/arjamizo/pwr-js-obs-perf/issues"
+  },
+  "homepage": "https://github.com/arjamizo/pwr-js-obs-perf#readme",
+  "dependencies": {
+    "bower": "^1.7.9",
+    "express": "^4.14.0"
+  }
+}
