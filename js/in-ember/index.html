@@ -80,13 +80,13 @@
     <script type="text/x-handlebars" id="todos">
         {{input value=title}} <button {{action "addTodo"}}>add</button> {{title}}
         {{! todos replaces controller or controllers.todos in case of using `needs` }}
-        <div class="list-group" style="margin-top: 10px;">
+        <ul>
             {{#each todosModel as |todo|}}  
-                <div class="list-group-item">
+                <li>
                     {{todo.title}}
-                </div>
+                </li>
             {{/each}}
-        </div>
+        </ul>
     </script>
     <script type="text/x-handlebars" id="application">
         {{outlet}}
