@@ -122,7 +122,7 @@
                             // console.assert(typeof i == "number");
                             var txt = "";
                             document.querySelector('#tests').innerHTML="<li>"+data.tests.map(function(e,i) {
-                                txt += e.name.match(/angular/)?"AngularJS":"EmberJS"+" & "+("    "+e.size).slice(-5)+" & "+e.first+" ms & "+e.time+" ms\n";
+                                txt += e.name.match(/angular/i)?"AngularJS":"EmberJS"+" & "+("    "+e.size).slice(-5)+" & "+e.first+" ms & "+e.time+" ms\n";
                                 return e.size + " elements, " + e.time + " ms, " + e.name;
                             }).join("</li><li>")+"</li>";
 
