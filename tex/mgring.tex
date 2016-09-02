@@ -1,0 +1,82 @@
+\documentclass[inzynier,druk,ramka]{tex/dyplom}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+%%
+\usepackage[toc]{appendix}
+\renewcommand{\appendixtocname}{Appendix}
+\renewcommand{\appendixpagename}{Appendix}
+%%
+\usepackage{listings}
+
+%\noappendicestocpagenum
+\usepackage{lipsum}
+\usepackage{url}
+%\usepackage{showframe}
+
+\author{Artur Zochniak}
+\title{Porównanie wydajności wzorca projektowego obserwator w różnych frameworkach w języku JavaScript}
+\titlen{Performance comparison of observer design pattern implementations in JavaScript}
+\promotor{dr inż. Tomasz Walkowiak, I-?}
+%\konsultant{?}
+\wydzial{Wydział Elektroniki}
+\kierunek{Informatyka}
+\specjalnosc{Internet Engineering}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\listoffigures
+
+\listoftables
+
+% \input{readme}
+
+\chapter{Thanks}
+
+\include{thanks}
+
+\chapter{Introduction}
+JavaScript is an interpretable language created by Netscape in late 70’. It is widely used in web development and, since some time, even on server side. This master thesis focuses on its usage in web development. JavaScript allows gives dynamism to webpages by allowing changing content in runtime, but since JavaScript is just a language, problem of creation and further development of complex application is solved by various JavaScript frameworks. Those frameworks have obviously different implementations, therefore their performance might vary a lot, depending on their internal architecture, approach to the problem and other criteria. 
+
+Javascript is dynamic, prototype-based cross-platform programming language. 
+This article describes differences in implementation of observer design pattern in two JavaScript frameworks: AngularJS and EmberJS and tries to answer which one is faster and tries to explain the answer. 
+First chapter provides background when and why JavaScript was created. 
+Second chapter describes short overview what does look like benchmarking environment.
+
+\section{Background}
+
+When Internet was born, it was mainly read-only. There was no interaction from reader’s point of view. This was era of HTML. Communication was possi-ble via email or IRC. In 1995 Netscape Communications Corporation (especially team led by Brendan Eich) came up with a language which allowed performing manipulations on DOM. It’s popularity was rising and later every internet brows-er manufacturer implemented features described in its JavaScript’s specification  . As the Internet was becoming popular, there was demand for more interactivi-ty, which would allow users to influence webpage contents, which is necessary for giving users ability to create and publish content by themselves. At the begin-ning webpages made experience of browsing the internet smoother by introduc-ing techniques like Ajax or DHTML, but as there were more content and bigger applications to manage, in order to make theirs further development possible, frameworks were introduced. Since that time developers may think in somehow unified way about solving similar tasks like how to organize structure of an ap-plication or how to fetch data from the server. 
+Research by Google  had shown that forcing user to wait even fraction of a second - drops down the satisfaction coming from experience of browsing webpage significantly, therefore problem of high performance is extremely im-portant from the point of view of acquiring new and keeping current clients satis-fied and happy. 
+
+\section{Benchmarking}
+In order to measure differences in performance simple application allowing to manage "to do" list was created. Application allows inserting, modifying and deleting elements and changes are immediately presented in browser client. 
+The crucial part of benchmarking is ensuring that the measurement involves only time when data are actually processed, not generated, therefore mechanism postponing measurements was introduced (it is described more precisely in chapter 5). Since tests require not only adding elements, but also modifying them - benchmarking tool gives ability to access entries directly, which makes performance tests more reproducible (having direct access to objects, in the opposite of finding elements by their keys or replacing them with new elements decreases time for generating intermediate data). This was achieved by ensuring that benchmarking tool has direct access to objects.
+
+\chapter{EmberJS}
+
+\subsection{Introduction}
+
+\cite{ember2014}
+
+\nocite{*}
+\bibliography{biblioex}
+\bibliographystyle{dyplom}
+\begin{thebibliography}{9}
+
+\bibitem{ember2014}
+  http://williamhart.info/an-emberjs-beginners-tutorial/
+  
+\bibitem{cljs2015}
+https://github.com/magomimmo/modern-cljs
+
+\bibitem{emberremo}
+http://guides.emberjs.com/v1.10.0/models/creating-and-deleting-records/
+
+\bibitem{emberdebouncethrottle}
+http://alexspeller.com/debounced-and-throttled-observers-in-ember-js/
+
+\end{thebibliography}
+\end{document}
